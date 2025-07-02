@@ -33,6 +33,7 @@ pub fn generate_project(config: &ProjectConfig, destination: &PathBuf) -> Result
         destination: Some(destination.clone()),
         define: template_variables.into_iter().map(|(k, v)| format!("{}={}", k, v)).collect(),
         verbose: true,
+        force: true, // Force overwrite existing files
         ..Default::default()
     };
 

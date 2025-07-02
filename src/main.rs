@@ -31,6 +31,14 @@ fn handle_create_command(args: CreateArgs) -> Result<(), Box<dyn Error>> {
         // Non-Interactive "Fast-Track" Mode
         println!("✔️ Fast-track mode enabled (--yes). Using default values.");
         let project_name = args.name.ok_or("In --yes mode, project name is required. e.g., `gwa create my-app -y`")?;
+        let author_name = "Test User".to_string(); // Let's be explicit
+        let author_slug = author_name
+            .to_lowercase()
+            .replace(' ', "-")
+            .chars()
+            .filter(|c| c.is_alphanumeric() || *c == '-')
+            .collect::<String>();
+        let deno_package_name = format!("@{}/{}", author_slug, project_name);
         ProjectConfig {
             project_name: project_name.clone(),
             author_name: "Test User".into(),
@@ -42,6 +50,7 @@ fn handle_create_command(args: CreateArgs) -> Result<(), Box<dyn Error>> {
             include_server: true,
             include_frontend: true,
             include_tauri_desktop: true,
+            deno_package_name: "@test/gwa-project".to_string(),
         }
     } else {
         // Standard Interactive Mode

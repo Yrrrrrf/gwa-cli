@@ -27,4 +27,5 @@ pub struct ProjectConfig {
     pub include_server: bool,
     pub include_frontend: bool,
     pub include_tauri_desktop: bool,
+    pub deno_package_name: String,
 }
