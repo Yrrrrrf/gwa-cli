@@ -1,0 +1,9 @@
+[package]
+name = "gwa"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cargo-generate = "0.23.3"
+clap = "4.5.40"
+inquire = "0.7.5"
