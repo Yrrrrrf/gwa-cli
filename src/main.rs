@@ -30,7 +30,9 @@ fn handle_create_command(args: CreateArgs) -> Result<(), Box<dyn Error>> {
     let config = if args.yes {
         // Non-Interactive "Fast-Track" Mode
         println!("✔️ Fast-track mode enabled (--yes). Using default values.");
-        let project_name = args.name.ok_or("In --yes mode, project name is required. e.g., `gwa create my-app -y`")?;
+        let project_name = args
+            .name
+            .ok_or("In --yes mode, project name is required. e.g., `gwa create my-app -y`")?;
         let author_name = "Test User".to_string(); // Let's be explicit
         let author_slug = author_name
             .to_lowercase()
@@ -43,9 +45,15 @@ fn handle_create_command(args: CreateArgs) -> Result<(), Box<dyn Error>> {
             project_name: project_name.clone(),
             author_name: "Test User".into(),
             author_email: "test@example.com".into(),
-            app_identifier: format!("com.example.{}", project_name.to_lowercase().replace('-', "")),
+            app_identifier: format!(
+                "com.example.{}",
+                project_name.to_lowercase().replace('-', "")
+            ),
             db_name: Some(project_name.to_lowercase().replace('-', "_")),
-            db_owner_admin: Some(format!("{}_owner", project_name.to_lowercase().replace('-', "_"))),
+            db_owner_admin: Some(format!(
+                "{}_owner",
+                project_name.to_lowercase().replace('-', "_")
+            )),
             db_owner_pword: Some("password".into()),
             include_server: true,
             include_frontend: true,

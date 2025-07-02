@@ -5,8 +5,10 @@ use clap::Parser; // This IS used for #[derive(Parser)]
 use inquire::{
     Confirm,
     // CustomType, // Not used in this version
-    Password, PasswordDisplayMode,
-    Select, Text,
+    Password,
+    PasswordDisplayMode,
+    Select,
+    Text,
     validator::{ErrorMessage, Validation},
 };
 // use std::collections::HashMap; // Not used yet if cargo-generate is commented out
@@ -15,7 +17,11 @@ use std::path::PathBuf; // This IS used for CliArgs output_dir
 
 // Define the structure for CLI arguments using clap
 #[derive(Parser, Debug)]
-#[clap(author, version, about = "CLI to generate a new General Web App (GWA) project")]
+#[clap(
+    author,
+    version,
+    about = "CLI to generate a new General Web App (GWA) project"
+)]
 struct CliArgs {
     /// Name of the new GWA project (directory name)
     #[clap(index = 1)] // Positional argument
@@ -63,11 +69,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                         "Project name cannot be empty.".into(),
                     )))
                 } else if input.contains('/') || input.contains('\\') || input.contains(' ') {
-                     Ok(Validation::Invalid(ErrorMessage::Custom(
-                        "Project name should be a valid directory name (no spaces or slashes).".into(),
+                    Ok(Validation::Invalid(ErrorMessage::Custom(
+                        "Project name should be a valid directory name (no spaces or slashes)."
+                            .into(),
                     )))
-                }
-                else {
+                } else {
                     Ok(Validation::Valid)
                 }
             })
@@ -101,7 +107,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         .prompt()?;
 
     // --- 3. Application Specifics ---
-    let default_app_id = format!("com.example.{}", project_name.to_lowercase().replace('-', ""));
+    let default_app_id = format!(
+        "com.example.{}",
+        project_name.to_lowercase().replace('-', "")
+    );
     let app_identifier = Text::new("Application Identifier (e.g., com.company.appname):")
         .with_initial_value(&default_app_id)
         .with_help_message("Used for Tauri bundle ID, Android package name, etc.")
@@ -122,7 +131,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         .prompt()?;
 
     let db_owner_admin = Text::new("Database owner/admin username:")
-        .with_initial_value(&format!("{}_owner", project_name.to_lowercase().replace('-', "_")))
+        .with_initial_value(&format!(
+            "{}_owner",
+            project_name.to_lowercase().replace('-', "_")
+        ))
         .prompt()?;
 
     let db_owner_pword = Password::new("Database owner/admin password:")
@@ -139,18 +151,21 @@ fn main() -> Result<(), Box<dyn Error>> {
         })
         .prompt()?;
 
-
     // --- 5. Optional Features ---
     let include_tauri = Confirm::new("Include Tauri desktop application setup?")
         .with_default(true)
         .prompt()?;
 
     let framework_options = vec!["SvelteKit (Default)", "Other (Placeholder)"];
-    let _chosen_framework = Select::new("Choose frontend framework (GWA currently uses SvelteKit):", framework_options)
-        .prompt()?;
+    let _chosen_framework = Select::new(
+        "Choose frontend framework (GWA currently uses SvelteKit):",
+        framework_options,
+    )
+    .prompt()?;
 
     // --- Store collected configuration ---
-    let config = ProjectConfig { // ProjectConfig is now defined above
+    let config = ProjectConfig {
+        // ProjectConfig is now defined above
         project_name: project_name.clone(),
         author_name,
         author_email,
@@ -167,16 +182,18 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // --- Confirmation before proceeding ---
     if !cli_args.yes {
-        let proceed = Confirm::new(&format!("Generate project '{}' with the above configuration?", config.project_name))
-            .with_default(true)
-            .prompt()?;
+        let proceed = Confirm::new(&format!(
+            "Generate project '{}' with the above configuration?",
+            config.project_name
+        ))
+        .with_default(true)
+        .prompt()?;
 
         if !proceed {
             println!("Project generation cancelled by user.");
             return Ok(());
         }
     }
-
 
     // --- TODO: Here you would call cargo_generate::generate ---
     println!("\nSimulating project generation...");
@@ -190,8 +207,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     // ... add other variables
 
     println!("Variables to pass to cargo-generate (simulated):");
-     for (key, value) in &template_variables {
-        if key == "db_owner_pword" { // This was for the ProjectConfig struct, not template_variables
+    for (key, value) in &template_variables {
+        if key == "db_owner_pword" {
+            // This was for the ProjectConfig struct, not template_variables
             println!("  {}: [REDACTED]", key);
         } else {
             println!("  {}: {}", key, value);

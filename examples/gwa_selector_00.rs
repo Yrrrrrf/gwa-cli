@@ -2,8 +2,10 @@
 
 use clap::Parser;
 use inquire::{
-    Confirm, MultiSelect,
-    Password, PasswordDisplayMode,
+    Confirm,
+    MultiSelect,
+    Password,
+    PasswordDisplayMode,
     // Select, // Commented out if not used for framework selection anymore
     Text,
     validator::{ErrorMessage, Validation},
@@ -14,7 +16,11 @@ use std::path::PathBuf;
 
 // Define the structure for CLI arguments using clap
 #[derive(Parser, Debug)]
-#[clap(author, version, about = "CLI to generate a new General Web App (GWA) project")]
+#[clap(
+    author,
+    version,
+    about = "CLI to generate a new General Web App (GWA) project"
+)]
 struct CliArgs {
     #[clap(index = 1)]
     project_name_arg: Option<String>,
@@ -68,38 +74,61 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         None => Text::new("Enter the name for your new project (e.g., my-awesome-app):")
             .with_validator(|input: &str| {
-                if input.trim().is_empty() { Ok(Validation::Invalid(ErrorMessage::Custom("Project name cannot be empty.".into()))) }
-                else if input.contains('/') || input.contains('\\') || input.contains(' ') { Ok(Validation::Invalid(ErrorMessage::Custom("Project name should be a valid directory name (no spaces or slashes).".into()))) }
-                else { Ok(Validation::Valid) }
+                if input.trim().is_empty() {
+                    Ok(Validation::Invalid(ErrorMessage::Custom(
+                        "Project name cannot be empty.".into(),
+                    )))
+                } else if input.contains('/') || input.contains('\\') || input.contains(' ') {
+                    Ok(Validation::Invalid(ErrorMessage::Custom(
+                        "Project name should be a valid directory name (no spaces or slashes)."
+                            .into(),
+                    )))
+                } else {
+                    Ok(Validation::Valid)
+                }
             })
             .prompt()?,
     };
 
     let author_name = Text::new("Author's full name (e.g., Ada Lovelace):")
         .with_validator(|input: &str| {
-            if input.trim().is_empty() { Ok(Validation::Invalid(ErrorMessage::Custom("Author name cannot be empty.".into()))) } else { Ok(Validation::Valid) }
+            if input.trim().is_empty() {
+                Ok(Validation::Invalid(ErrorMessage::Custom(
+                    "Author name cannot be empty.".into(),
+                )))
+            } else {
+                Ok(Validation::Valid)
+            }
         })
         .prompt()?;
     let author_email = Text::new("Author's email address (e.g., ada@example.com):")
         .with_validator(|input: &str| {
-            if input.trim().is_empty() || !input.contains('@') || !input.contains('.') { Ok(Validation::Invalid(ErrorMessage::Custom("Please enter a valid email address.".into()))) } else { Ok(Validation::Valid) }
+            if input.trim().is_empty() || !input.contains('@') || !input.contains('.') {
+                Ok(Validation::Invalid(ErrorMessage::Custom(
+                    "Please enter a valid email address.".into(),
+                )))
+            } else {
+                Ok(Validation::Valid)
+            }
         })
         .prompt()?;
 
     println!("\n--- Component Selection ---");
     let component_options = vec![GwaComponent::Server, GwaComponent::Frontend];
-    let selected_components = MultiSelect::new(
-        "Select the core components to include:",
-        component_options,
-    )
-    .with_help_message("Use space to toggle, enter to confirm. At least one component is recommended.")
-    .prompt()?;
+    let selected_components =
+        MultiSelect::new("Select the core components to include:", component_options)
+            .with_help_message(
+                "Use space to toggle, enter to confirm. At least one component is recommended.",
+            )
+            .prompt()?;
 
     let include_server = selected_components.contains(&GwaComponent::Server);
     let include_frontend = selected_components.contains(&GwaComponent::Frontend);
 
     if !include_server && !include_frontend {
-        println!("⚠️ Warning: No core components selected. This might result in a very minimal project.");
+        println!(
+            "⚠️ Warning: No core components selected. This might result in a very minimal project."
+        );
     }
 
     let mut include_tauri_desktop = false;
@@ -108,7 +137,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if include_frontend {
         println!("\n--- Frontend & Desktop Configuration ---");
-        let default_app_id = format!("com.example.{}", project_name.to_lowercase().replace('-', ""));
+        let default_app_id = format!(
+            "com.example.{}",
+            project_name.to_lowercase().replace('-', "")
+        );
         app_identifier = Text::new("Application Identifier (e.g., com.company.appname):")
             .with_initial_value(&default_app_id)
             .with_help_message("Required if Frontend is selected, used for Tauri bundle ID, PWA manifest, etc.")
@@ -125,10 +157,11 @@ fn main() -> Result<(), Box<dyn Error>> {
             .prompt()?;
 
         if include_tauri_desktop {
-            include_tauri_android_poc = Confirm::new("Include experimental Tauri for Android (Proof-of-Concept)?")
-                .with_default(false)
-                .with_help_message("GWA has basic PoC for Android, full support is ongoing.")
-                .prompt()?;
+            include_tauri_android_poc =
+                Confirm::new("Include experimental Tauri for Android (Proof-of-Concept)?")
+                    .with_default(false)
+                    .with_help_message("GWA has basic PoC for Android, full support is ongoing.")
+                    .prompt()?;
         }
     }
 
@@ -138,19 +171,34 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if include_server {
         println!("\n--- Database Configuration (Required for Server) ---");
-        db_name_opt = Some(Text::new("Database name:")
-            .with_initial_value(&project_name.to_lowercase().replace('-', "_"))
-            .prompt()?);
-        db_owner_admin_opt = Some(Text::new("Database owner/admin username:")
-            .with_initial_value(&format!("{}_owner", project_name.to_lowercase().replace('-', "_")))
-            .prompt()?);
-        db_owner_pword_opt = Some(Password::new("Database owner/admin password:")
-            .with_display_mode(PasswordDisplayMode::Masked)
-            .with_help_message("Enter the password. You will be asked to confirm it.")
-            .with_validator(|input: &str| {
-                if input.len() < 8 { Ok(Validation::Invalid(ErrorMessage::Custom("Password must be at least 8 characters long.".into()))) } else { Ok(Validation::Valid) }
-            })
-            .prompt()?);
+        db_name_opt = Some(
+            Text::new("Database name:")
+                .with_initial_value(&project_name.to_lowercase().replace('-', "_"))
+                .prompt()?,
+        );
+        db_owner_admin_opt = Some(
+            Text::new("Database owner/admin username:")
+                .with_initial_value(&format!(
+                    "{}_owner",
+                    project_name.to_lowercase().replace('-', "_")
+                ))
+                .prompt()?,
+        );
+        db_owner_pword_opt = Some(
+            Password::new("Database owner/admin password:")
+                .with_display_mode(PasswordDisplayMode::Masked)
+                .with_help_message("Enter the password. You will be asked to confirm it.")
+                .with_validator(|input: &str| {
+                    if input.len() < 8 {
+                        Ok(Validation::Invalid(ErrorMessage::Custom(
+                            "Password must be at least 8 characters long.".into(),
+                        )))
+                    } else {
+                        Ok(Validation::Valid)
+                    }
+                })
+                .prompt()?,
+        );
     }
 
     let config = ProjectConfig {
@@ -172,9 +220,12 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("Output directory: {:?}", cli_args.output_dir);
 
     if !cli_args.yes {
-        let proceed = Confirm::new(&format!("Generate project '{}' with the above configuration?", config.project_name))
-            .with_default(true)
-            .prompt()?;
+        let proceed = Confirm::new(&format!(
+            "Generate project '{}' with the above configuration?",
+            config.project_name
+        ))
+        .with_default(true)
+        .prompt()?;
         if !proceed {
             println!("Project generation cancelled by user.");
             return Ok(());
@@ -189,13 +240,31 @@ fn main() -> Result<(), Box<dyn Error>> {
     if !config.app_identifier.is_empty() {
         template_variables.insert("app_identifier".to_string(), config.app_identifier.clone());
     }
-    template_variables.insert("include_server".to_string(), config.include_server.to_string());
-    template_variables.insert("include_frontend".to_string(), config.include_frontend.to_string());
-    template_variables.insert("include_tauri_desktop".to_string(), config.include_tauri_desktop.to_string());
-    template_variables.insert("include_tauri_android_poc".to_string(), config.include_tauri_android_poc.to_string());
-    if let Some(db_name) = &config.db_name { template_variables.insert("db_name".to_string(), db_name.clone()); }
-    if let Some(db_admin) = &config.db_owner_admin { template_variables.insert("db_owner_admin".to_string(), db_admin.clone()); }
-    if config.db_owner_pword.is_some() { template_variables.insert("db_owner_pword_provided".to_string(), "true".to_string()); }
+    template_variables.insert(
+        "include_server".to_string(),
+        config.include_server.to_string(),
+    );
+    template_variables.insert(
+        "include_frontend".to_string(),
+        config.include_frontend.to_string(),
+    );
+    template_variables.insert(
+        "include_tauri_desktop".to_string(),
+        config.include_tauri_desktop.to_string(),
+    );
+    template_variables.insert(
+        "include_tauri_android_poc".to_string(),
+        config.include_tauri_android_poc.to_string(),
+    );
+    if let Some(db_name) = &config.db_name {
+        template_variables.insert("db_name".to_string(), db_name.clone());
+    }
+    if let Some(db_admin) = &config.db_owner_admin {
+        template_variables.insert("db_owner_admin".to_string(), db_admin.clone());
+    }
+    if config.db_owner_pword.is_some() {
+        template_variables.insert("db_owner_pword_provided".to_string(), "true".to_string());
+    }
 
     println!("Variables to pass to cargo-generate (simulated):");
     for (key, value) in &template_variables {
@@ -205,7 +274,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("\n✅ GWA project setup initiated (simulation complete).");
     println!("Please integrate with `cargo-generate` to perform actual file generation.");
     println!("Your GWA template will need Liquid `{{% if include_server %}}` etc. tags."); // CORRECTED LINE
-
 
     Ok(())
 }
