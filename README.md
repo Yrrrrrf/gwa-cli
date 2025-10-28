@@ -16,10 +16,6 @@ GWA Scaffolder
   <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/made%20with-Rust-orange.svg"></a>
 </p>
 
----
-
-## Overview
-
 `gwa-create` is the official command-line tool for scaffolding a new [**General Web App (GWA)**](https://github.com/Yrrrrrf/gwa) project. It provides an interactive experience to configure your new project, allowing you to select components, define names, and set up database credentials before generating all the necessary files from the GWA template.
 
 This tool handles all the heavy lifting, so you can go from an empty directory to a fully structured, ready-to-run, full-stack application in seconds.

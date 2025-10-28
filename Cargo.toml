@@ -3,14 +3,14 @@ name = "gwa"
 version = "0.1.1"
 edition = "2024"
 description = "A command-line scaffolder for General Web App (GWA) projects."
-authors = ["Yrrrrrf <fer.rezac@outlook.com>"] # It's good practice to include an email
-repository = "https://github.com/Yrrrrrf/gwa-create" # Link to the specific CLI repo
-documentation = "https://github.com/Yrrrrrf/gwa-create/blob/main/README.md" # Link to your new README
+authors = ["Yrrrrrf <fer.rezac@outlook.com>"]
+repository = "https://github.com/Yrrrrrf/gwa-create"
+documentation = "https://github.com/Yrrrrrf/gwa-create/blob/main/README.md"
 license = "MIT"
 keywords = ["cli", "scaffolding", "template", "web", "fullstack"]
 categories = ["command-line-utilities", "development-tools"]
 exclude = [
-    "examples/", # Exclude examples from a published package
+    "examples/",
 ]
 
 
