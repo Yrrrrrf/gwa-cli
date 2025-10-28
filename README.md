@@ -1,22 +1,24 @@
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Yrrrrrf/gwa/main/resources/img/gwa-no-bg.png" alt="General Web App Icon" width="128" height="128">
-</p>
-
 <h1 align="center">
-GWA Scaffolder
+  <img src="https://raw.githubusercontent.com/Yrrrrrf/gwa/main/resources/img/gwa-no-bg.png" alt="General Web App Icon" width="128" height="128">
+  <div align="center">gwa-cli</div>
 </h1>
 
-<p align="center">
-  A lightning-fast, interactive CLI for creating new <a href="https://github.com/Yrrrrrf/gwa">GWA</a> projects.
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="https://github.com/Yrrrrrf/gwa-create/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <a href="https://www.rust-lang.org/"><img src="https://img.shields.io/badge/made%20with-Rust-orange.svg"></a>
-</p>
+[![Crates.io](https://img.shields.io/crates/v/gwa.svg?logo=rust)](https://crates.io/crates/gwa)
+[![docs.rs](https://img.shields.io/badge/docs.rs-gwa-66c2a5)](https://docs.rs/gwa)
+[![Crates.io Downloads](https://img.shields.io/crates/d/gwa)](https://crates.io/crates/gwa)
 
-`gwa-create` is the official command-line tool for scaffolding a new [**General Web App (GWA)**](https://github.com/Yrrrrrf/gwa) project. It provides an interactive experience to configure your new project, allowing you to select components, define names, and set up database credentials before generating all the necessary files from the GWA template.
+[![PyPI version](https://img.shields.io/pypi/v/gwa)](https://pypi.org/project/gwa/)
+[![PyPi Downloads](https://pepy.tech/badge/gwa)](https://pepy.tech/project/gwa)
+
+[![GitHub: Repo](https://img.shields.io/badge/gwa-58A6FF?&logo=github)](https://github.com/Yrrrrrf/gwa)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
+</div>
+
+> A lightning-fast, interactive CLI for creating new GWA projects.
+
+`gwa-cli` is the official command-line tool for scaffolding a new [**General Web App (GWA)**](https://github.com/Yrrrrrf/gwa) project. It provides an interactive experience to configure your new project, allowing you to select components, define names, and set up database credentials before generating all the necessary files from the GWA template.
 
 This tool handles all the heavy lifting, so you can go from an empty directory to a fully structured, ready-to-run, full-stack application in seconds.
 
@@ -32,7 +34,7 @@ This tool handles all the heavy lifting, so you can go from an empty directory t
 
 ### Prerequisites
 
-You must have [Rust and Cargo](https://www.rust-lang.org/tools/install) installed on your system to build and install `gwa-create`.
+You must have [Rust and Cargo](https://www.rust-lang.org/tools/install) installed on your system to build and install `gwa-cli`.
 
 ### Installation
 
@@ -40,7 +42,7 @@ You can install the `gwa` binary directly from this source repository using `car
 
 This command will build the project in release mode and place the `gwa` executable in your Cargo binary path (`~/.cargo/bin/`), making it available system-wide.
 ```sh
-cargo install gwa-create
+cargo install gwa
 ```
 
 **Verify the installation:**
