@@ -39,6 +39,18 @@ gwa = "gwa:main"
 module-name = "gwa._core"
 python-packages = ["gwa"]
 python-source = "src"
+features = ["pyo3/extension-module"]
+# exclude = [
+#     ".github",
+#     ".venv",
+#     "resources/",
+#     "docs/",
+#     "scirpts/",
+#     "examples/*.rs",
+#     "target/",
+#     "*.lock",
+# ]
+
 
 [tool.uv]
 cache-keys = [{ file = "pyproject.toml" }, { file = "src/**/*.rs" }, { file = "Cargo.toml" }, { file = "Cargo.lock" }]
