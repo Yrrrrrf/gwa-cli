@@ -12,7 +12,7 @@
 [![PyPI version](https://img.shields.io/pypi/v/gwa)](https://pypi.org/project/gwa/)
 [![PyPi Downloads](https://pepy.tech/badge/gwa)](https://pepy.tech/project/gwa)
 
-[![GitHub: Repo](https://img.shields.io/badge/gwa-58A6FF?&logo=github)](https://github.com/Yrrrrrf/gwa)
+[![GitHub: Repo](https://img.shields.io/badge/gwa--cli-58A6FF?&logo=github)](https://github.com/Yrrrrrf/gwa-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 </div>
 

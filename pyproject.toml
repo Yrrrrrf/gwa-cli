@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://pypi.org/project/gwa/"
+# Homepage = "https://pypi.org/project/gwa/"
 Repository = "https://github.com/Yrrrrrf/gwa-cli"
 Documentation = "https://docs.rs/gwa"
 
@@ -39,7 +39,6 @@ gwa = "gwa:main"
 module-name = "gwa._core"
 python-packages = ["gwa"]
 python-source = "src"
-features = ["pyo3/extension-module"]
 # exclude = [
 #     ".github",
 #     ".venv",
