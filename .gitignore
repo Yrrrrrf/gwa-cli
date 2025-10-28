@@ -1,2 +1,27 @@
-/target
-/Cargo.lock
+# all that start with a dot except .gitignore
+.*
+!.gitignore
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# uv related
+.venv
+.ruff_cache
+.pytest_cache
+dist
+
+# Rust-generated files
+/target/
+temp/
+
+# lock files
+**/**.lock
+
+# Environment files
+.env
