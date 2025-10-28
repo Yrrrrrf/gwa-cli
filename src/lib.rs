@@ -1,4 +1,3 @@
-use dev_utils::app_dt;
 use pyo3::prelude::*;
 
 #[pyfunction]
@@ -9,7 +8,8 @@ fn hello_from_bin() -> String {
 // Create an init function to register the application metadata
 #[pyfunction]
 pub fn init() -> PyResult<()> {
-    app_dt!(file!(),
+    // todo: On 'dev_utils' crate, the macro must also return the value as a HashMap!
+    dev_utils::app_dt!(file!(),
         "package" => ["authors", "license", "description"]
     );
     Ok(())
