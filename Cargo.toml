@@ -53,6 +53,7 @@ crate-type = [
 [dependencies]
 cargo-generate = "0.23.5"
 clap = "4.5.50"
+dev_utils = "0.1.4"
 inquire = "0.9.1"
 # "extension-module" tells pyo3 we want to build an extension module (skips linking against libpython.so)
 # "abi3-py39" tells pyo3 (and maturin) to build using the stable ABI with minimum Python version 3.9
