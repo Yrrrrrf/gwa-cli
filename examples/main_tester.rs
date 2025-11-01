@@ -1,4 +1,4 @@
-// use 
+// use
 
 use _core::init;
 

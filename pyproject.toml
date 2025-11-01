@@ -1,7 +1,7 @@
 [project]
 name = "gwa"
-version = "0.0.1"
-requires-python = ">=3.13"
+version = "0.0.2"
+requires-python = ">=3.10"
 description = "A command-line scaffolder for General Web App (GWA) projects."
 authors = [
     { name = "Fernando Bryan Reza Campos", email = "fer.rezac@outlook.com" }
@@ -23,10 +23,12 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "pydantic>=2.12.3",
-    "rich>=14.2.0",
-    "textual>=6.4.0",
-    "typer>=0.20.0",
+    "maturin>=1.9.6", # build and publish rust-based python
+    "pydantic>=2.12.3", # data validation
+    "rich>=14.2.0", # rich text and formatting
+    # "textual>=6.4.0",  # tui
+    "textual>=6.5.0",
+    "typer>=0.20.0", # cli
 ]
 
 [project.urls]

@@ -2,7 +2,7 @@
 name = "gwa"
 version = "0.1.2"
 edition = "2024"
-description = "A command-line scaffolder for General Web App (GWA) projects."
+description = "General Web App (GWA) project generator engine CLI tool."
 authors = [
     "Fernando Bryan Reza Campos <fer.rezac@outlook.com>"
 ]
@@ -51,7 +51,7 @@ crate-type = [
 
 [dependencies]
 cargo-generate = "0.23.5"
-clap = "4.5.50"
+clap = "4.5.51"
 dev_utils = "0.1.4"
 inquire = "0.9.1"
 # "extension-module" tells pyo3 we want to build an extension module (skips linking against libpython.so)
