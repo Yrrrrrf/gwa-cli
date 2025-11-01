@@ -23,7 +23,6 @@ classifiers = [
     "Topic :: Utilities",
 ]
 dependencies = [
-    "maturin>=1.9.6", # build and publish rust-based python
     "pydantic>=2.12.3", # data validation
     "rich>=14.2.0", # rich text and formatting
     # "textual>=6.4.0",  # tui
