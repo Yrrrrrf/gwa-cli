@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 // src/config.rs
 
 #[derive(Debug, Clone, PartialEq)]

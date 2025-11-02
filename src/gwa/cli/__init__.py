@@ -13,12 +13,11 @@ app: Typer = Typer(
 console = Console()
 
 
-def register_commands():
+def init_cli():
     """Register all CLI commands and options with the app."""
-    print("Registering commands...")
+    from gwa.cli.callbacks import register_callbacks
     from gwa.cli.commands import register_commands
-    from gwa.cli.options import register_callbacks
 
     # * Register all commands and options with the app
-    register_commands(app)
     register_callbacks(app)
+    register_commands(app)

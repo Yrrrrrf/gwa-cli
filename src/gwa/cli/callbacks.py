@@ -7,7 +7,7 @@ from gwa.cli import console
 
 def register_callbacks(app: typer.Typer):
     """Register all global options with the Typer app."""
-    app.callback()(version)
+    app.callback(invoke_without_command=True)(version)
 
 
 def version(
