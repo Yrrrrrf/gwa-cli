@@ -6,6 +6,30 @@ mod config;
 mod generator;
 use crate::config::ProjectConfig;
 
+// Macro to extract config values from PyDict with default values
+macro_rules! extract_config {
+    // Pattern for required values (no default)
+    ($dict:expr, $key:literal, required) => {{
+        if let Some(value) = $dict.get_item($key)? {
+            value.extract()?
+        } else {
+            return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(concat!(
+                $key,
+                " is required"
+            )));
+        }
+    }};
+
+    // Pattern for optional values with default (handles all types)
+    ($dict:expr, $key:literal, $default:expr) => {{
+        if let Some(value) = $dict.get_item($key)? {
+            value.extract()?
+        } else {
+            $default
+        }
+    }};
+}
+
 #[pyfunction]
 fn hello_from_bin() -> String {
     "Hello from gwa!".to_string()
@@ -25,92 +49,51 @@ pub fn init() -> PyResult<()> {
 #[pyfunction]
 fn generate_project_from_static_branch(config_dict: &Bound<'_, PyDict>) -> PyResult<bool> {
     // Convert the Python dictionary to a Rust ProjectConfig struct
-    let project_name: String = if let Some(value) = config_dict.get_item("project_name")? {
-        value.extract()?
-    } else {
-        return Err(PyErr::new::<pyo3::exceptions::PyValueError, _>(
-            "project_name is required",
-        ));
-    };
-
-    let destination: String = if let Some(value) = config_dict.get_item("destination")? {
-        value.extract()?
-    } else {
-        ".".to_string()
-    };
-
+    let project_name: String = extract_config!(config_dict, "project_name", required);
+    let destination: String = extract_config!(config_dict, "destination", ".".to_string());
     let destination_path = PathBuf::from(destination);
 
     // Extract other configuration options with defaults or Optionals
-    let author_name: String = if let Some(value) = config_dict.get_item("author_name")? {
-        value.extract()?
-    } else {
-        "Test User".to_string()
-    };
+    let author_name: String = extract_config!(config_dict, "author_name", "Test User".to_string());
+    let author_email: String =
+        extract_config!(config_dict, "author_email", "test@example.com".to_string());
 
-    let author_email: String = if let Some(value) = config_dict.get_item("author_email")? {
-        value.extract()?
-    } else {
-        "test@example.com".to_string()
-    };
-
-    let db_name: Option<String> = if let Some(value) = config_dict.get_item("db_name")? {
-        Some(value.extract()?)
-    } else {
+    let db_name: Option<String> = extract_config!(
+        config_dict,
+        "db_name",
         Some(project_name.to_lowercase().replace('-', "_"))
-    };
+    );
 
-    let db_owner_admin: Option<String> =
-        if let Some(value) = config_dict.get_item("db_owner_admin")? {
-            Some(value.extract()?)
-        } else {
-            Some(format!(
-                "{}_owner",
-                project_name.to_lowercase().replace('-', "_")
-            ))
-        };
+    let db_owner_admin: Option<String> = extract_config!(
+        config_dict,
+        "db_owner_admin",
+        Some(format!(
+            "{}_owner",
+            project_name.to_lowercase().replace('-', "_")
+        ))
+    );
 
     let db_owner_pword: Option<String> =
-        if let Some(value) = config_dict.get_item("db_owner_pword")? {
-            Some(value.extract()?)
-        } else {
-            Some("password".to_string())
-        };
+        extract_config!(config_dict, "db_owner_pword", Some("password".to_string()));
 
-    let include_server: bool = if let Some(value) = config_dict.get_item("include_server")? {
-        value.extract()?
-    } else {
-        true
-    };
+    let include_server: bool = extract_config!(config_dict, "include_server", true);
+    let include_frontend: bool = extract_config!(config_dict, "include_frontend", true);
+    let include_tauri_desktop: bool = extract_config!(config_dict, "include_tauri_desktop", true);
 
-    let include_frontend: bool = if let Some(value) = config_dict.get_item("include_frontend")? {
-        value.extract()?
-    } else {
-        true
-    };
-
-    let include_tauri_desktop: bool =
-        if let Some(value) = config_dict.get_item("include_tauri_desktop")? {
-            value.extract()?
-        } else {
-            true
-        };
-
-    let app_identifier: String = if let Some(value) = config_dict.get_item("app_identifier")? {
-        value.extract()?
-    } else {
+    let app_identifier: String = extract_config!(
+        config_dict,
+        "app_identifier",
         format!(
             "com.example.{}",
             project_name.to_lowercase().replace('-', "")
         )
-    };
+    );
 
-    let deno_package_name: String =
-        if let Some(value) = config_dict.get_item("deno_package_name")? {
-            value.extract()?
-        } else {
-            "@test/gwa-project".to_string()
-        };
+    let deno_package_name: String = extract_config!(
+        config_dict,
+        "deno_package_name",
+        "@test/gwa-project".to_string()
+    );
 
     // Create the ProjectConfig struct
     let project_config = ProjectConfig {

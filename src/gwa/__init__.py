@@ -1,15 +1,20 @@
 from gwa._core import hello_from_bin
 from gwa._core import init
 
-from gwa.cli import run_cli
+from gwa.cli import app
 from gwa.tui import run_tui
 
 
 def main() -> None:
     """Main entry point for the GWA CLI."""
     init()
-    run_cli()
-    # run_tui()
+
+    # Register all commands and options before running the app
+    from gwa.cli import register_commands
+
+    register_commands()
+
+    app()  # run cli app
 
 
 if __name__ == "__main__":
