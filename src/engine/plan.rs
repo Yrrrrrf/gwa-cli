@@ -248,6 +248,7 @@ mod tests {
             author_email: "test@example.com".to_string(),
             app_identifier: "com.example.myapp".to_string(),
             db_name: Some("my_app".to_string()),
+            db_owner_pword: Some("password".to_string()),
             db_owner_admin: Some("my_app_owner".to_string()),
             include_server: true,
             include_frontend: true,
