@@ -1,5 +1,5 @@
 # rust module imports
-from gwa._core import hello_from_bin
+# from gwa._core import hello_from_bin
 from gwa._core import init
 # python module imports
 from gwa.cli import app
