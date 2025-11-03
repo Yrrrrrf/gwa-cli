@@ -5,7 +5,7 @@
 // Declare our modules
 mod cli;
 mod config;
-mod generator;
+mod engine;
 mod interactive;
 mod validators;
 
@@ -65,8 +65,8 @@ fn handle_create_command(args: CreateArgs) -> Result<(), Box<dyn Error>> {
         interactive::run_interactive_flow(args.name)?
     };
 
-    // Generate the project using the obtained config
-    generator::generate_project(&config, &args.destination)?;
+    // Generate the project using the new engine
+    engine::run(&config, &args.destination).map_err(|e| e.to_string())?;
 
     Ok(())
 }

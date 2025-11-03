@@ -109,7 +109,7 @@ def create(
 
     try:
         console.print("[bold]⚙️ Starting project generation...[/bold]")
-        success = _core.generate_project_from_static_branch(config_dict)
+        success = _core.run_engine(config_dict)
         if success:
             console.print(
                 f"[bold green]✅ Project '{name}' created successfully![/bold green]"

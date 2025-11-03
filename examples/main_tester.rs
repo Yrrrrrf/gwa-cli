@@ -1,7 +1,7 @@
 // use
 
-use _core::init;
+// use _core::init;
 
 fn main() {
-    let _ = init();
+    // let _ = init();
 }
