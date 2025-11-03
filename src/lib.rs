@@ -31,95 +31,9 @@ macro_rules! extract_config {
     }};
 }
 
-// // Create an init function to register the application metadata
-// #[pyfunction]
-// pub fn init() -> PyResult<()> {
-//     // todo: On 'dev_utils' crate, the macro must also return the value as a HashMap!
-//     dev_utils::app_dt!(file!(),
-//         "package" => ["authors", "license", "description"]
-//     );
-//     Ok(())
-// }
-
 #[pyfunction]
 fn get_crate_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
-}
-
-// Keep the old function for backwards compatibility but mark it as deprecated
-/// Main function to generate a project from the static branch (deprecated - use run_engine instead)
-#[pyfunction]
-fn generate_project_from_static_branch(config_dict: &Bound<'_, PyDict>) -> PyResult<bool> {
-    // Convert the Python dictionary to a Rust ProjectConfig struct
-    let project_name: String = extract_config!(config_dict, "project_name", required);
-    let destination: String = extract_config!(config_dict, "destination", ".".to_string());
-    let destination_path = PathBuf::from(destination);
-
-    // Extract other configuration options with defaults or Optionals
-    let author_name: String = extract_config!(config_dict, "author_name", "Test User".to_string());
-    let author_email: String =
-        extract_config!(config_dict, "author_email", "test@example.com".to_string());
-
-    let db_name: Option<String> = extract_config!(
-        config_dict,
-        "db_name",
-        Some(project_name.to_lowercase().replace('-', "_"))
-    );
-
-    let db_owner_admin: Option<String> = extract_config!(
-        config_dict,
-        "db_owner_admin",
-        Some(format!(
-            "{}_owner",
-            project_name.to_lowercase().replace('-', "_")
-        ))
-    );
-
-    let db_owner_pword: Option<String> =
-        extract_config!(config_dict, "db_owner_pword", Some("password".to_string()));
-
-    let include_server: bool = extract_config!(config_dict, "include_server", true);
-    let include_frontend: bool = extract_config!(config_dict, "include_frontend", true);
-    let include_tauri_desktop: bool = extract_config!(config_dict, "include_tauri_desktop", true);
-
-    let app_identifier: String = extract_config!(
-        config_dict,
-        "app_identifier",
-        format!(
-            "com.example.{}",
-            project_name.to_lowercase().replace('-', "")
-        )
-    );
-
-    let deno_package_name: String = extract_config!(
-        config_dict,
-        "deno_package_name",
-        "@test/gwa-project".to_string()
-    );
-
-    // Create the ProjectConfig struct
-    let project_config = ProjectConfig {
-        project_name: project_name.clone(),
-        author_name,
-        author_email,
-        app_identifier,
-        db_name,
-        db_owner_admin,
-        db_owner_pword,
-        include_server,
-        include_frontend,
-        include_tauri_desktop,
-        deno_package_name,
-    };
-
-    // Generate the project using the new engine instead of the old generator
-    match engine::run(&project_config, &destination_path) {
-        Ok(_) => Ok(true),
-        Err(e) => Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(format!(
-            "Failed to generate project: {}",
-            e
-        ))),
-    }
 }
 
 /// The new engine-based function to generate a project
@@ -205,7 +119,6 @@ fn _core(m: &Bound<PyModule>) -> PyResult<()> {
     // m.add_function(wrap_pyfunction!(hello_from_bin, m)?)?;
     // m.add_function(wrap_pyfunction!(init, m)?)?;
     m.add_function(wrap_pyfunction!(get_crate_version, m)?)?;
-    m.add_function(wrap_pyfunction!(generate_project_from_static_branch, m)?)?;
     m.add_function(wrap_pyfunction!(run_engine, m)?)?;
     Ok(())
 }

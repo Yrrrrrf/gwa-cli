@@ -1,4 +1,4 @@
-"""CLI application for GWA - A hybrid project generator."""
+"""CLI application for GWA"""
 
 from typer import Typer
 from rich.console import Console
@@ -21,3 +21,5 @@ def init_cli():
     # * Register all commands and options with the app
     register_callbacks(app)
     register_commands(app)
+
+    app()

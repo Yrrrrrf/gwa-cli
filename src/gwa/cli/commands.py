@@ -12,6 +12,7 @@ def register_commands(app: typer.Typer):
     """Register all commands with the Typer app."""
     app.command()(create)
 
+
 def create(
     name: str = typer.Argument(..., help="Name for the new project directory."),
     destination: Path = typer.Option(

@@ -2,12 +2,29 @@ from typing import Optional
 
 import typer
 
-from gwa.cli import console
-
 
 def register_callbacks(app: typer.Typer):
     """Register all global options with the Typer app."""
     app.callback(invoke_without_command=True)(version)
+
+
+def define_version_globals():
+    # declare global variables
+    global __version_crates__
+    global __python_version__
+    global __version_pypi__
+    # import statements
+    from gwa._core import get_crate_version
+    from importlib.metadata import version
+    from sys import version_info as v_info
+
+    # assign global variables
+    __version_crates__ = get_crate_version()
+    __version_pypi__ = version("gwa")
+    __python_version__ = f"{v_info.major}.{v_info.minor}.{v_info.micro}"
+
+
+define_version_globals()
 
 
 def version(
@@ -19,17 +36,15 @@ def version(
         is_eager=True,
     ),
 ):
-    """GWA CLI - A hybrid project generator."""
-    if version:
-        try:
-            from importlib.metadata import version as get_version
+    from rich.console import Console
+    from rich.table import Table
 
-            pkg_version = get_version("gwa")
-        except:
-            pkg_version = "0.1.0"
+    # Create a clean table
+    table = Table(show_header=False, box=None, padding=(0, 2))
 
-        console.print(f"[bold]GWA CLI v{pkg_version}[/bold]")
-        console.print(
-            "A hybrid project generator using Rust for performance and Python for UI"
-        )
-        raise typer.Exit()
+    table.add_row("[bold cyan]Python[/]", f"[green]{__python_version__}[/]")
+    table.add_row("[dim](cli) py[/]", f"[blue italic]{__version_pypi__}[/]")
+    table.add_row("[dim](engine) rs[/]", f"[blue italic]{__version_crates__}[/]")
+
+    console = Console()
+    console.print(table)

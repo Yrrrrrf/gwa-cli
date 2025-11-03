@@ -1,5 +1,5 @@
 //! The core "Transformation Engine" module.
-//! 
+//!
 //! This module orchestrates the entire project generation process by:
 //! 1. Fetching the source template
 //! 2. Building a transformation plan based on user configuration
@@ -7,13 +7,13 @@
 //! 4. Deploying the result to the destination
 
 pub mod error;
-pub mod source;
 pub mod plan;
+pub mod source;
 pub mod transform;
 
 use crate::config::ProjectConfig;
+use fs_extra::dir::{CopyOptions, copy};
 use std::path::Path;
-use fs_extra::dir::{copy, CopyOptions};
 
 pub use error::EngineError; // Re-export for convenience
 
@@ -31,7 +31,7 @@ pub fn run(config: &ProjectConfig, destination: &Path) -> Result<(), EngineError
     // 3. Execute the plan
     println!("⚙️  Applying transformations...");
     transform::execute(&plan, temp_dir.path())?;
-    
+
     // 4. Copy to final destination
     println!("🚚 Copying project to {}...", destination.display());
     let mut options = CopyOptions::new();
@@ -39,6 +39,9 @@ pub fn run(config: &ProjectConfig, destination: &Path) -> Result<(), EngineError
     copy(temp_dir.path(), destination, &options)
         .map_err(|e| EngineError::FinalCopyFailed(format!("Failed to copy project: {}", e)))?;
 
-    println!("\n✅ Project '{}' created successfully!", config.project_name);
+    println!(
+        "\n✅ Project '{}' created successfully!",
+        config.project_name
+    );
     Ok(()) // The temp_dir will be automatically cleaned up when it goes out of scope
 }

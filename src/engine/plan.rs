@@ -1,15 +1,21 @@
 //! Transformation plan module - defines what transformations need to be applied
 
+use super::EngineError;
 use crate::config::ProjectConfig;
 use std::path::PathBuf;
-use super::EngineError;
 
 // An action to be performed on the cloned template
 #[derive(Debug, PartialEq, Clone)]
 pub enum Action {
     Delete(PathBuf),
-    Rename { from: PathBuf, to: PathBuf },
-    ApplyTemplate { path: PathBuf, context: TemplateContext },
+    Rename {
+        from: PathBuf,
+        to: PathBuf,
+    },
+    ApplyTemplate {
+        path: PathBuf,
+        context: TemplateContext,
+    },
 }
 
 // Data to be injected into template files
@@ -35,21 +41,23 @@ pub struct TransformationPlan {
 
 pub fn build_plan(config: &ProjectConfig) -> Result<TransformationPlan, EngineError> {
     let mut plan = TransformationPlan::default();
-    
+
     // 1. Plan basic deletions (files/directories not needed in final project)
     plan.actions.push(Action::Delete(PathBuf::from(".git")));
     plan.actions.push(Action::Delete(PathBuf::from(".github")));
-    plan.actions.push(Action::Delete(PathBuf::from("ROADMAP.md")));
+    plan.actions
+        .push(Action::Delete(PathBuf::from("ROADMAP.md")));
 
     // 2. Plan conditional deletions based on configuration
     if !config.include_tauri_desktop {
-        plan.actions.push(Action::Delete(PathBuf::from("generic-app/src-tauri")));
+        plan.actions
+            .push(Action::Delete(PathBuf::from("client/src-tauri")));
     }
-    
+
     if !config.include_server {
         plan.actions.push(Action::Delete(PathBuf::from("backend")));
     }
-    
+
     if !config.include_frontend {
         plan.actions.push(Action::Delete(PathBuf::from("frontend")));
     }
@@ -67,36 +75,39 @@ pub fn build_plan(config: &ProjectConfig) -> Result<TransformationPlan, EngineEr
         include_tauri_desktop: config.include_tauri_desktop,
         deno_package_name: config.deno_package_name.clone(),
     };
-    
+
     // Apply template to key files that contain placeholders
     plan.actions.push(Action::ApplyTemplate {
         path: PathBuf::from("README.md"),
         context: context.clone(),
     });
-    
+
     plan.actions.push(Action::ApplyTemplate {
         path: PathBuf::from("docker-compose.yml"),
         context: context.clone(),
     });
-    
+
     plan.actions.push(Action::ApplyTemplate {
         path: PathBuf::from("Cargo.toml"),
         context: context.clone(),
     });
-    
+
     plan.actions.push(Action::ApplyTemplate {
-        path: PathBuf::from("generic-app/package.json"),
+        path: PathBuf::from("client/package.json"),
         context: context.clone(),
     });
 
-    // 4. Plan renaming of the generic-app directory to match the project name
+    // 4. Plan renaming of the client directory to match the project name
     plan.actions.push(Action::Rename {
-        from: PathBuf::from("generic-app"),
+        from: PathBuf::from("client"),
         to: PathBuf::from(&config.project_name),
     });
 
-    println!("📝 Transformation plan built with {} actions", plan.actions.len());
-    
+    println!(
+        "📝 Transformation plan built with {} actions",
+        plan.actions.len()
+    );
+
     Ok(plan)
 }
 
@@ -124,17 +135,27 @@ mod tests {
 
         // Act: Build the plan
         let plan = build_plan(&config).unwrap();
-        
+
         // Assert: Check for expected actions
         // 1. Check for basic deletions
-        assert!(plan.actions.contains(&Action::Delete(PathBuf::from(".github"))));
-        assert!(plan.actions.contains(&Action::Delete(PathBuf::from("ROADMAP.md"))));
-        
+        assert!(
+            plan.actions
+                .contains(&Action::Delete(PathBuf::from(".github")))
+        );
+        assert!(
+            plan.actions
+                .contains(&Action::Delete(PathBuf::from("ROADMAP.md")))
+        );
+
         // 2. Check that Tauri directory is NOT deleted when include_tauri_desktop is true
-        assert!(!plan.actions.contains(&Action::Delete(PathBuf::from("generic-app/src-tauri"))));
-        
+        assert!(
+            !plan
+                .actions
+                .contains(&Action::Delete(PathBuf::from("client/src-tauri")))
+        );
+
         // 3. Check for template application
-        let expected_context = TemplateContext { 
+        let expected_context = TemplateContext {
             project_name: "my-app".to_string(),
             author_name: "Test User".to_string(),
             author_email: "test@example.com".to_string(),
@@ -146,7 +167,7 @@ mod tests {
             include_tauri_desktop: true,
             deno_package_name: "@test/my-app".to_string(),
         };
-        
+
         assert!(plan.actions.contains(&Action::ApplyTemplate {
             path: PathBuf::from("README.md"),
             context: expected_context.clone(),
@@ -167,9 +188,12 @@ mod tests {
         let plan = build_plan(&config).unwrap();
 
         // Assert: Tauri directory SHOULD be in the delete list
-        assert!(plan.actions.contains(&Action::Delete(PathBuf::from("generic-app/src-tauri"))));
+        assert!(
+            plan.actions
+                .contains(&Action::Delete(PathBuf::from("client/src-tauri")))
+        );
     }
-    
+
     #[test]
     fn test_plan_generation_without_server() {
         // Arrange: Create a config with server disabled
@@ -184,9 +208,12 @@ mod tests {
         let plan = build_plan(&config).unwrap();
 
         // Assert: Backend directory SHOULD be in the delete list
-        assert!(plan.actions.contains(&Action::Delete(PathBuf::from("backend"))));
+        assert!(
+            plan.actions
+                .contains(&Action::Delete(PathBuf::from("backend")))
+        );
     }
-    
+
     #[test]
     fn test_plan_generation_without_frontend() {
         // Arrange: Create a config with frontend disabled
@@ -201,9 +228,12 @@ mod tests {
         let plan = build_plan(&config).unwrap();
 
         // Assert: Frontend directory SHOULD be in the delete list
-        assert!(plan.actions.contains(&Action::Delete(PathBuf::from("frontend"))));
+        assert!(
+            plan.actions
+                .contains(&Action::Delete(PathBuf::from("frontend")))
+        );
     }
-    
+
     #[test]
     fn test_plan_generation_with_rename_action() {
         // Arrange: Create a sample config
@@ -216,10 +246,10 @@ mod tests {
 
         // Act: Build the plan
         let plan = build_plan(&config).unwrap();
-        
+
         // Assert: Check for the rename action
         assert!(plan.actions.contains(&Action::Rename {
-            from: PathBuf::from("generic-app"),
+            from: PathBuf::from("client"),
             to: PathBuf::from("my-shiny-new-app"),
         }));
     }
