@@ -1,6 +1,6 @@
 [package]
 name = "gwa"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2024"
 description = "General Web App (GWA) project generator engine CLI tool."
 authors = [
@@ -19,11 +19,13 @@ categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".*",  # all that start with a dot
     "dist/",
-    "**/**/__pycache__/",
     "examples/*.py",
+    "src/gwa/",  # python source code
+    "**/**/__pycache__/",  # python cache folders
     "target/",
     "tests/*.py",
     "**/*.lock",
+    "pyproject.toml",
 ]
 
 # * COMPILE OPTIMIZATION ------------------------------------------------------------------------

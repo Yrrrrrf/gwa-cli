@@ -6,7 +6,6 @@
 pub enum EngineError {
     // #[error("Configuration is invalid: {0}")]
     // InvalidConfig(String),
-
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
@@ -15,13 +14,11 @@ pub enum EngineError {
 
     // #[error("Template processing error: {0}")]
     // Template(String),
-
     #[error("File system operation failed: {0}")]
     FileSystem(String),
 
     // #[error("Path operation failed: {path}, error: {error}")]
     // PathError { path: PathBuf, error: String },
-
     #[error("Source fetch failed: {0}")]
     SourceFetchFailed(String),
 

@@ -1,6 +1,6 @@
 [project]
 name = "gwa"
-version = "0.0.6"
+version = "0.0.7"
 requires-python = ">=3.10"
 description = "A command-line scaffolder for General Web App (GWA) projects."
 authors = [

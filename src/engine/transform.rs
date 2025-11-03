@@ -67,6 +67,30 @@ pub fn execute(plan: &TransformationPlan, temp_dir: &Path) -> Result<(), EngineE
                     println!("📝 Applied template: {}", path.display());
                 }
             }
+            Action::CreateFile { path, content, context } => {
+                let full_path = temp_dir.join(path);
+                
+                // Create parent directories if they don't exist
+                if let Some(parent) = full_path.parent() {
+                    fs::create_dir_all(parent).map_err(|e| {
+                        EngineError::FileSystem(format!(
+                            "Failed to create parent directory for {:?}: {}",
+                            path, e
+                        ))
+                    })?;
+                }
+
+                // Apply template replacements to the content
+                let processed_content = apply_template_replacements(&content, context);
+
+                fs::write(&full_path, processed_content).map_err(|e| {
+                    EngineError::FileSystem(format!(
+                        "Failed to write content to {:?}: {}",
+                        path, e
+                    ))
+                })?;
+                println!("📄 Created file: {}", path.display());
+            }
         }
     }
     Ok(())
@@ -94,6 +118,10 @@ fn apply_template_replacements(content: &str, context: &TemplateContext) -> Stri
 
     if let Some(ref db_owner_admin) = context.db_owner_admin {
         result = result.replace("{{db_owner_admin}}", db_owner_admin);
+    }
+
+    if let Some(ref db_owner_pword) = context.db_owner_pword {
+        result = result.replace("{{db_owner_pword}}", db_owner_pword);
     }
 
     // Replace package name
