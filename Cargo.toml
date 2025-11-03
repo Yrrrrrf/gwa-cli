@@ -7,7 +7,7 @@ authors = [
     "Fernando Bryan Reza Campos <fer.rezac@outlook.com>"
 ]
 readme = "README.md"
-license = "LICENSE"
+license = "MIT"
 
 homepage = "https://crates.io/crates/gwa"
 repository = "https://github.com/Yrrrrrf/gwa-cli"
