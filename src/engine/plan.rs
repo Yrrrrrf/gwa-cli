@@ -1,4 +1,5 @@
 //! Transformation plan module - defines what transformations need to be applied
+#![allow(dead_code)]
 
 use super::EngineError;
 use crate::config::ProjectConfig;

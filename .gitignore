@@ -10,12 +10,6 @@ dist/
 wheels/
 *.egg-info
 
-# uv related
-.venv
-.ruff_cache
-.pytest_cache
-dist
-
 # Rust-generated files
 /target/
 temp/
@@ -23,5 +17,3 @@ temp/
 # lock files
 **/**.lock
 
-# Environment files
-.env
